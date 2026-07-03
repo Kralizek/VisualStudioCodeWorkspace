@@ -1,7 +1,8 @@
 using System.Text.Json;
+
 using CodeWorkspaceTool.Commands.Settings;
 
-namespace CodeWorkspaceTool.Tests.Unit.Commands.Settings;
+namespace CodeWorkspaceTool.Tests.Commands.Settings;
 
 [TestFixture]
 [TestOf(typeof(SettingValueParser))]

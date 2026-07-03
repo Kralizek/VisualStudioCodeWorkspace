@@ -1,7 +1,7 @@
 using CodeWorkspaceTool.Model;
 using CodeWorkspaceTool.Serialization;
 
-namespace CodeWorkspaceTool.Tests.Integration;
+namespace CodeWorkspaceTool.Integration.Tests;
 
 [TestOf(typeof(JsonWorkspaceRepository))]
 public class JsonWorkspaceRepositoryTests

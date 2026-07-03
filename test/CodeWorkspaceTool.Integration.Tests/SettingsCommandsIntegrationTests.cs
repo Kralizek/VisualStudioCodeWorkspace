@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace CodeWorkspaceTool.Tests.Integration;
+namespace CodeWorkspaceTool.Integration.Tests;
 
 [TestFixture]
 public class SettingsCommandsIntegrationTests : IntegrationTestBase
@@ -55,5 +55,17 @@ public class SettingsCommandsIntegrationTests : IntegrationTestBase
         var exitCode = Run("settings", "unset", "--workspace", _workspaceFile, "nope.nope");
 
         Assert.That(exitCode, Is.Not.EqualTo(0));
+    }
+
+    [Test]
+    public void List_succeeds_in_table_and_json_format()
+    {
+        Run("settings", "set", "--workspace", _workspaceFile, "editor.formatOnSave", "true");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Run("settings", "list", "--workspace", _workspaceFile), Is.EqualTo(0));
+            Assert.That(Run("settings", "list", "--workspace", _workspaceFile, "--format", "json"), Is.EqualTo(0));
+        });
     }
 }

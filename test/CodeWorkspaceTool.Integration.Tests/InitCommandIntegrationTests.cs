@@ -1,7 +1,8 @@
 using System.Text.Json;
+
 using CodeWorkspaceTool.Commands.Init;
 
-namespace CodeWorkspaceTool.Tests.Integration;
+namespace CodeWorkspaceTool.Integration.Tests;
 
 [TestFixture]
 [TestOf(typeof(InitCommand))]

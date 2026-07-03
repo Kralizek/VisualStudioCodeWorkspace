@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 using CodeWorkspaceTool.Model;
 
 namespace CodeWorkspaceTool.Serialization;

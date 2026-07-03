@@ -1,7 +1,8 @@
 using System.Text.Json;
+
 using CodeWorkspaceTool.Model;
 
-namespace CodeWorkspaceTool.Tests.Unit.Model;
+namespace CodeWorkspaceTool.Tests.Model;
 
 [TestFixture]
 [TestOf(typeof(ExtensionsBlock))]

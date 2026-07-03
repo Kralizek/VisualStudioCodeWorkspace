@@ -1,9 +1,10 @@
 using System.Text.Json.Nodes;
+
 using CodeWorkspaceTool.Commands.Settings;
 using CodeWorkspaceTool.Model;
 using CodeWorkspaceTool.Serialization;
 
-namespace CodeWorkspaceTool.Tests.Unit.Commands.Settings;
+namespace CodeWorkspaceTool.Tests.Commands.Settings;
 
 [TestFixture]
 [TestOf(typeof(SettingsSetCommand))]

@@ -1,8 +1,10 @@
 using CodeWorkspaceTool.Serialization;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using Spectre.Console.Cli;
 
-namespace CodeWorkspaceTool.Tests.Integration;
+namespace CodeWorkspaceTool.Integration.Tests;
 
 /// <summary>
 /// Exercises the real CommandApp (as built by CodewsCommandApp, the same factory Program.cs

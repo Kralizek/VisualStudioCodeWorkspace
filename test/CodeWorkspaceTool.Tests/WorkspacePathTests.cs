@@ -1,4 +1,4 @@
-namespace CodeWorkspaceTool.Tests.Unit;
+namespace CodeWorkspaceTool.Tests;
 
 [TestOf(typeof(WorkspacePath))]
 public class WorkspacePathTests

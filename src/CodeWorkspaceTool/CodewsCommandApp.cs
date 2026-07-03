@@ -2,6 +2,7 @@ using CodeWorkspaceTool.Commands.Extension;
 using CodeWorkspaceTool.Commands.Folder;
 using CodeWorkspaceTool.Commands.Init;
 using CodeWorkspaceTool.Commands.Settings;
+
 using Spectre.Console;
 using Spectre.Console.Cli;
 

@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace CodeWorkspaceTool.Tests.Integration;
+namespace CodeWorkspaceTool.Integration.Tests;
 
 [TestFixture]
 public class ExtensionCommandsIntegrationTests : IntegrationTestBase
@@ -42,5 +42,17 @@ public class ExtensionCommandsIntegrationTests : IntegrationTestBase
         var exitCode = Run("extension", "remove", "--workspace", _workspaceFile, "nope.nope");
 
         Assert.That(exitCode, Is.Not.EqualTo(0));
+    }
+
+    [Test]
+    public void List_succeeds_in_table_and_json_format()
+    {
+        Run("extension", "add", "--workspace", _workspaceFile, "ms-dotnettools.csharp");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Run("extension", "list", "--workspace", _workspaceFile), Is.EqualTo(0));
+            Assert.That(Run("extension", "list", "--workspace", _workspaceFile, "--format", "json"), Is.EqualTo(0));
+        });
     }
 }

@@ -2,7 +2,7 @@ using CodeWorkspaceTool.Commands.Init;
 using CodeWorkspaceTool.Model;
 using CodeWorkspaceTool.Serialization;
 
-namespace CodeWorkspaceTool.Tests.Unit.Commands.Init;
+namespace CodeWorkspaceTool.Tests.Commands.Init;
 
 [TestFixture]
 [TestOf(typeof(InitCommand))]

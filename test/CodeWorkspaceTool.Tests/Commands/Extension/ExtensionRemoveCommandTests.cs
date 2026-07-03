@@ -2,7 +2,7 @@ using CodeWorkspaceTool.Commands.Extension;
 using CodeWorkspaceTool.Model;
 using CodeWorkspaceTool.Serialization;
 
-namespace CodeWorkspaceTool.Tests.Unit.Commands.Extension;
+namespace CodeWorkspaceTool.Tests.Commands.Extension;
 
 [TestFixture]
 [TestOf(typeof(ExtensionRemoveCommand))]
