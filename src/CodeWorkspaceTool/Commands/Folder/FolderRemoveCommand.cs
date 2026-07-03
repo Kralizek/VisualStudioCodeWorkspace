@@ -4,13 +4,14 @@ using Spectre.Console.Cli;
 
 namespace CodeWorkspaceTool.Commands.Folder;
 
-public sealed class FolderRemoveCommand : Command<FolderRemoveCommandSettings>
+public sealed class FolderRemoveCommand(IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+    : Command<FolderRemoveCommandSettings>
 {
     protected override int Execute(CommandContext context, FolderRemoveCommandSettings settings, CancellationToken cancellationToken)
     {
-        var workspacePath = WorkspaceFileLocator.Resolve(settings.Workspace);
+        var workspacePath = locator.Resolve(settings.Workspace);
         var workspaceDirectory = Path.GetDirectoryName(workspacePath)!;
-        var document = WorkspaceDocumentSerializer.Load(workspacePath);
+        var document = repository.Load(workspacePath);
 
         foreach (var path in settings.Paths)
         {
@@ -26,7 +27,7 @@ public sealed class FolderRemoveCommand : Command<FolderRemoveCommandSettings>
             AnsiConsole.MarkupLineInterpolated($"[green]Removed[/] {match.Path}");
         }
 
-        WorkspaceDocumentSerializer.Save(document, workspacePath);
+        repository.Save(document, workspacePath);
         return 0;
     }
 }

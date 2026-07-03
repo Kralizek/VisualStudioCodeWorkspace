@@ -5,12 +5,13 @@ using Spectre.Console.Cli;
 
 namespace CodeWorkspaceTool.Commands.Extension;
 
-public sealed class ExtensionListCommand : Command<ExtensionListCommandSettings>
+public sealed class ExtensionListCommand(IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+    : Command<ExtensionListCommandSettings>
 {
     protected override int Execute(CommandContext context, ExtensionListCommandSettings settings, CancellationToken cancellationToken)
     {
-        var workspacePath = WorkspaceFileLocator.Resolve(settings.Workspace);
-        var document = WorkspaceDocumentSerializer.Load(workspacePath);
+        var workspacePath = locator.Resolve(settings.Workspace);
+        var document = repository.Load(workspacePath);
 
         if (settings.Format == OutputFormat.Json)
         {

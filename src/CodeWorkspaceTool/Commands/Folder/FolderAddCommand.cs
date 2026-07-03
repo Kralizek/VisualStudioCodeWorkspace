@@ -1,16 +1,18 @@
+using CodeWorkspaceTool.Model;
 using CodeWorkspaceTool.Serialization;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace CodeWorkspaceTool.Commands.Folder;
 
-public sealed class FolderAddCommand : Command<FolderAddCommandSettings>
+public sealed class FolderAddCommand(IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+    : Command<FolderAddCommandSettings>
 {
     protected override int Execute(CommandContext context, FolderAddCommandSettings settings, CancellationToken cancellationToken)
     {
-        var workspacePath = WorkspaceFileLocator.Resolve(settings.Workspace);
+        var workspacePath = locator.Resolve(settings.Workspace);
         var workspaceDirectory = Path.GetDirectoryName(workspacePath)!;
-        var document = WorkspaceDocumentSerializer.Load(workspacePath);
+        var document = repository.Load(workspacePath);
 
         var name = settings.Paths.Length == 1 ? settings.Name : null;
 
@@ -28,11 +30,11 @@ public sealed class FolderAddCommand : Command<FolderAddCommandSettings>
             }
 
             var stored = WorkspacePath.ToStored(workspaceDirectory, path);
-            document.Folders.Add(new Model.WorkspaceFolder { Path = stored, Name = name });
+            document.Folders.Add(new WorkspaceFolder { Path = stored, Name = name });
             AnsiConsole.MarkupLineInterpolated($"[green]Added[/] {stored}");
         }
 
-        WorkspaceDocumentSerializer.Save(document, workspacePath);
+        repository.Save(document, workspacePath);
         return 0;
     }
 }

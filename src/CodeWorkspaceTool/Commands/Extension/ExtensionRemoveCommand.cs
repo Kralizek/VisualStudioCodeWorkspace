@@ -4,12 +4,13 @@ using Spectre.Console.Cli;
 
 namespace CodeWorkspaceTool.Commands.Extension;
 
-public sealed class ExtensionRemoveCommand : Command<ExtensionRemoveCommandSettings>
+public sealed class ExtensionRemoveCommand(IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+    : Command<ExtensionRemoveCommandSettings>
 {
     protected override int Execute(CommandContext context, ExtensionRemoveCommandSettings settings, CancellationToken cancellationToken)
     {
-        var workspacePath = WorkspaceFileLocator.Resolve(settings.Workspace);
-        var document = WorkspaceDocumentSerializer.Load(workspacePath);
+        var workspacePath = locator.Resolve(settings.Workspace);
+        var document = repository.Load(workspacePath);
 
         var list = settings.Unwanted
             ? document.Extensions?.UnwantedRecommendations
@@ -44,7 +45,7 @@ public sealed class ExtensionRemoveCommand : Command<ExtensionRemoveCommandSetti
             document.Extensions = null;
         }
 
-        WorkspaceDocumentSerializer.Save(document, workspacePath);
+        repository.Save(document, workspacePath);
         return 0;
     }
 }

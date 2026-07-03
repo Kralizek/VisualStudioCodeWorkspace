@@ -5,13 +5,14 @@ using Spectre.Console.Cli;
 
 namespace CodeWorkspaceTool.Commands.Folder;
 
-public sealed class FolderListCommand : Command<FolderListCommandSettings>
+public sealed class FolderListCommand(IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+    : Command<FolderListCommandSettings>
 {
     protected override int Execute(CommandContext context, FolderListCommandSettings settings, CancellationToken cancellationToken)
     {
-        var workspacePath = WorkspaceFileLocator.Resolve(settings.Workspace);
+        var workspacePath = locator.Resolve(settings.Workspace);
         var workspaceDirectory = Path.GetDirectoryName(workspacePath)!;
-        var document = WorkspaceDocumentSerializer.Load(workspacePath);
+        var document = repository.Load(workspacePath);
 
         if (settings.Format == OutputFormat.Json)
         {

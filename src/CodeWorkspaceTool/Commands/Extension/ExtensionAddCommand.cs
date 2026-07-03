@@ -5,12 +5,13 @@ using Spectre.Console.Cli;
 
 namespace CodeWorkspaceTool.Commands.Extension;
 
-public sealed class ExtensionAddCommand : Command<ExtensionAddCommandSettings>
+public sealed class ExtensionAddCommand(IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+    : Command<ExtensionAddCommandSettings>
 {
     protected override int Execute(CommandContext context, ExtensionAddCommandSettings settings, CancellationToken cancellationToken)
     {
-        var workspacePath = WorkspaceFileLocator.Resolve(settings.Workspace);
-        var document = WorkspaceDocumentSerializer.Load(workspacePath);
+        var workspacePath = locator.Resolve(settings.Workspace);
+        var document = repository.Load(workspacePath);
 
         document.Extensions ??= new ExtensionsBlock();
         var list = settings.Unwanted
@@ -29,7 +30,7 @@ public sealed class ExtensionAddCommand : Command<ExtensionAddCommandSettings>
             AnsiConsole.MarkupLineInterpolated($"[green]Added[/] {id}");
         }
 
-        WorkspaceDocumentSerializer.Save(document, workspacePath);
+        repository.Save(document, workspacePath);
         return 0;
     }
 }

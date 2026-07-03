@@ -3,7 +3,7 @@ using CodeWorkspaceTool.Model;
 
 namespace CodeWorkspaceTool.Serialization;
 
-public static class WorkspaceDocumentSerializer
+public sealed class JsonWorkspaceRepository : IWorkspaceRepository
 {
     // .code-workspace files are hand-edited in VS Code, which tolerates comments and
     // trailing commas; we accept the same on read even though we don't preserve them on write.
@@ -18,7 +18,7 @@ public static class WorkspaceDocumentSerializer
         WriteIndented = true,
     };
 
-    public static WorkspaceDocument Load(string path)
+    public WorkspaceDocument Load(string path)
     {
         var json = File.ReadAllText(path);
         try
@@ -32,7 +32,7 @@ public static class WorkspaceDocumentSerializer
         }
     }
 
-    public static void Save(WorkspaceDocument document, string path)
+    public void Save(WorkspaceDocument document, string path)
     {
         var json = JsonSerializer.Serialize(document, WriteOptions);
         File.WriteAllText(path, json + Environment.NewLine);

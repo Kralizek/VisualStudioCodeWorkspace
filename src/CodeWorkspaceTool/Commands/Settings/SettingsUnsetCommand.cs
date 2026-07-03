@@ -4,12 +4,13 @@ using Spectre.Console.Cli;
 
 namespace CodeWorkspaceTool.Commands.Settings;
 
-public sealed class SettingsUnsetCommand : Command<SettingsUnsetCommandSettings>
+public sealed class SettingsUnsetCommand(IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+    : Command<SettingsUnsetCommandSettings>
 {
     protected override int Execute(CommandContext context, SettingsUnsetCommandSettings settings, CancellationToken cancellationToken)
     {
-        var workspacePath = WorkspaceFileLocator.Resolve(settings.Workspace);
-        var document = WorkspaceDocumentSerializer.Load(workspacePath);
+        var workspacePath = locator.Resolve(settings.Workspace);
+        var document = repository.Load(workspacePath);
 
         if (document.Settings is null || !document.Settings.Remove(settings.Key))
         {
@@ -21,7 +22,7 @@ public sealed class SettingsUnsetCommand : Command<SettingsUnsetCommandSettings>
             document.Settings = null;
         }
 
-        WorkspaceDocumentSerializer.Save(document, workspacePath);
+        repository.Save(document, workspacePath);
         AnsiConsole.MarkupLineInterpolated($"[green]Unset[/] {settings.Key}");
         return 0;
     }
