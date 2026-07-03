@@ -12,6 +12,7 @@ public sealed class ExtensionsBlock
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<string>? UnwantedRecommendations { get; set; }
 
+    [JsonIgnore]
     public bool IsEmpty =>
         (Recommendations is null || Recommendations.Count == 0) &&
         (UnwantedRecommendations is null || UnwantedRecommendations.Count == 0);

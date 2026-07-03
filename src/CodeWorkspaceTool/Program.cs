@@ -1,5 +1,7 @@
+using CodeWorkspaceTool.Commands.Extension;
 using CodeWorkspaceTool.Commands.Folder;
 using CodeWorkspaceTool.Commands.Init;
+using CodeWorkspaceTool.Commands.Settings;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -18,6 +20,22 @@ app.Configure(config =>
         folder.AddCommand<FolderAddCommand>("add").WithDescription("Add one or more folders.");
         folder.AddCommand<FolderRemoveCommand>("remove").WithDescription("Remove one or more folders.");
         folder.AddCommand<FolderListCommand>("list").WithDescription("List the folders in a workspace.");
+    });
+
+    config.AddBranch("extension", extension =>
+    {
+        extension.SetDescription("Manage recommended and unwanted extensions.");
+        extension.AddCommand<ExtensionAddCommand>("add").WithDescription("Add one or more extensions.");
+        extension.AddCommand<ExtensionRemoveCommand>("remove").WithDescription("Remove one or more extensions.");
+        extension.AddCommand<ExtensionListCommand>("list").WithDescription("List the extensions in a workspace.");
+    });
+
+    config.AddBranch("settings", settings =>
+    {
+        settings.SetDescription("Manage workspace settings.");
+        settings.AddCommand<SettingsSetCommand>("set").WithDescription("Set a setting.");
+        settings.AddCommand<SettingsUnsetCommand>("unset").WithDescription("Remove a setting.");
+        settings.AddCommand<SettingsListCommand>("list").WithDescription("List the settings in a workspace.");
     });
 
     config.SetExceptionHandler((ex, _) =>
