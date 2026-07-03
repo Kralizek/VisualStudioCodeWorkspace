@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 namespace Tests;
 
 /// <summary>
-/// Exercises the real CommandApp (as built by CodewsCommandApp, the same factory Program.cs
+/// Exercises the real CommandApp (as built by CodeWorkspaceCommandApp, the same factory Program.cs
 /// uses) against real temp directories, with the real file-system-backed services - no fakes.
 /// </summary>
 public abstract class IntegrationTestBase
@@ -24,7 +24,7 @@ public abstract class IntegrationTestBase
         var services = new ServiceCollection();
         services.AddSingleton<IWorkspaceFileLocator, FileSystemWorkspaceFileLocator>();
         services.AddSingleton<IWorkspaceRepository, JsonWorkspaceRepository>();
-        _app = CodewsCommandApp.Create(new TypeRegistrar(services));
+        _app = CodeWorkspaceCommandApp.Create(new TypeRegistrar(services));
     }
 
     [TearDown]

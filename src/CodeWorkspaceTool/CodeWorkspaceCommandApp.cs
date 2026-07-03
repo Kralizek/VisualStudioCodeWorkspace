@@ -12,7 +12,7 @@ namespace CodeWorkspaceTool;
 /// Builds the codews command tree. Shared by Program.cs and by integration tests, so the two
 /// can never drift apart.
 /// </summary>
-public static class CodewsCommandApp
+public static class CodeWorkspaceCommandApp
 {
     public static CommandApp Create(ITypeRegistrar registrar)
     {
