@@ -2,7 +2,7 @@ using System.Text.Json;
 
 using CodeWorkspaceTool.Commands.Init;
 
-namespace CodeWorkspaceTool.Integration.Tests;
+namespace Tests;
 
 [TestFixture]
 [TestOf(typeof(InitCommand))]

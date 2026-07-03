@@ -1,8 +1,8 @@
+using CodeWorkspaceTool;
 using CodeWorkspaceTool.Commands.Extension;
 using CodeWorkspaceTool.Model;
 using CodeWorkspaceTool.Serialization;
-
-namespace CodeWorkspaceTool.Tests.Commands.Extension;
+namespace Tests.Commands.Extension;
 
 [TestFixture]
 [TestOf(typeof(ExtensionAddCommand))]

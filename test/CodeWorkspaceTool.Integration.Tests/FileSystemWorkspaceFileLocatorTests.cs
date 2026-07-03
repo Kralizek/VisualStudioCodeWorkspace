@@ -1,4 +1,5 @@
-namespace CodeWorkspaceTool.Integration.Tests;
+using CodeWorkspaceTool;
+namespace Tests;
 
 [TestFixture]
 [TestOf(typeof(FileSystemWorkspaceFileLocator))]

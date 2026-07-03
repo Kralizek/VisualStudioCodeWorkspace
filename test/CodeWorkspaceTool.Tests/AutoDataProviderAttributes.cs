@@ -2,7 +2,7 @@ using AutoFixture;
 using AutoFixture.AutoFakeItEasy;
 using AutoFixture.NUnit3;
 
-namespace CodeWorkspaceTool.Tests;
+namespace Tests;
 
 public interface IFixtureCustomization
 {

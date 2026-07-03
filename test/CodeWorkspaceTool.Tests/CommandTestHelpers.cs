@@ -1,6 +1,6 @@
 using Spectre.Console.Cli;
 
-namespace CodeWorkspaceTool.Tests;
+namespace Tests;
 
 /// <summary>
 /// Command&lt;TSettings&gt;.Execute is protected, but it's reachable through the public

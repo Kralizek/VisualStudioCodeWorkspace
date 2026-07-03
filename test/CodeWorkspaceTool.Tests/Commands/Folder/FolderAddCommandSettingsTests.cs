@@ -1,6 +1,6 @@
 using CodeWorkspaceTool.Commands.Folder;
 
-namespace CodeWorkspaceTool.Tests.Commands.Folder;
+namespace Tests.Commands.Folder;
 
 [TestFixture]
 [TestOf(typeof(FolderAddCommandSettings))]

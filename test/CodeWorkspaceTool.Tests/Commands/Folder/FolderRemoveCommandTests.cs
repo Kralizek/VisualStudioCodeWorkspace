@@ -1,8 +1,8 @@
+using CodeWorkspaceTool;
 using CodeWorkspaceTool.Commands.Folder;
 using CodeWorkspaceTool.Model;
 using CodeWorkspaceTool.Serialization;
-
-namespace CodeWorkspaceTool.Tests.Commands.Folder;
+namespace Tests.Commands.Folder;
 
 [TestFixture]
 [TestOf(typeof(FolderRemoveCommand))]

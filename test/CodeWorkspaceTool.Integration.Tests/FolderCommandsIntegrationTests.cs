@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace CodeWorkspaceTool.Integration.Tests;
+namespace Tests;
 
 [TestFixture]
 public class FolderCommandsIntegrationTests : IntegrationTestBase
