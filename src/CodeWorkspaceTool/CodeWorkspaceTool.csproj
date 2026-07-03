@@ -44,7 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="\" />
+    <!-- README.md is inside the project directory, so the SDK's default globs already include
+         it as a None item; use Update (not Include) to avoid a duplicate-item conflict. -->
+    <None Update="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
