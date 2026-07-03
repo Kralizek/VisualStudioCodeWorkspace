@@ -6,10 +6,6 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
-    <!-- AutoFixture.AutoFakeItEasy/AutoFixture.NUnit3 4.18.1 declare older upper bounds on
-         FakeItEasy/NUnit than the versions below; verified compatible against the versions
-         actually restored here. -->
-    <NoWarn>$(NoWarn);NU1608</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

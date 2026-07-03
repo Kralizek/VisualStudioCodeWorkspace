@@ -1,6 +1,7 @@
 namespace CodeWorkspaceTool.Tests.Integration;
 
 [TestFixture]
+[TestOf(typeof(FileSystemWorkspaceFileLocator))]
 [NonParallelizable] // mutates the process-wide current directory
 public class FileSystemWorkspaceFileLocatorTests
 {
@@ -24,13 +25,13 @@ public class FileSystemWorkspaceFileLocatorTests
     }
 
     [Test]
-    public void Resolve_throws_when_no_workspace_file_exists()
+    public void Throws_when_no_workspace_file_exists()
     {
         Assert.That(() => _locator.Resolve(null), Throws.TypeOf<CodeWorkspaceException>());
     }
 
     [Test]
-    public void Resolve_finds_the_single_workspace_file_in_the_current_directory()
+    public void Finds_the_single_workspace_file_in_the_current_directory()
     {
         var expected = Path.Combine(_tempDirectory, "demo.code-workspace");
         File.WriteAllText(expected, "{}");
@@ -41,7 +42,7 @@ public class FileSystemWorkspaceFileLocatorTests
     }
 
     [Test]
-    public void Resolve_throws_when_multiple_workspace_files_exist()
+    public void Throws_when_multiple_workspace_files_exist()
     {
         File.WriteAllText(Path.Combine(_tempDirectory, "a.code-workspace"), "{}");
         File.WriteAllText(Path.Combine(_tempDirectory, "b.code-workspace"), "{}");
@@ -50,7 +51,7 @@ public class FileSystemWorkspaceFileLocatorTests
     }
 
     [Test]
-    public void Resolve_uses_the_explicit_path_regardless_of_the_current_directory()
+    public void Uses_the_explicit_path_regardless_of_the_current_directory()
     {
         var elsewhere = Directory.CreateTempSubdirectory().FullName;
         try
@@ -69,7 +70,7 @@ public class FileSystemWorkspaceFileLocatorTests
     }
 
     [Test]
-    public void Resolve_throws_when_the_explicit_path_does_not_exist()
+    public void Throws_when_the_explicit_path_does_not_exist()
     {
         var missing = Path.Combine(_tempDirectory, "missing.code-workspace");
 

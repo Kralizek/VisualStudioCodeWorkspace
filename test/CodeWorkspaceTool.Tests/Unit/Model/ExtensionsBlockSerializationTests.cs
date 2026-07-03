@@ -4,6 +4,7 @@ using CodeWorkspaceTool.Model;
 namespace CodeWorkspaceTool.Tests.Unit.Model;
 
 [TestFixture]
+[TestOf(typeof(ExtensionsBlock))]
 public class ExtensionsBlockSerializationTests
 {
     // Regression test: IsEmpty is a computed convenience property and previously leaked into
@@ -40,7 +41,10 @@ public class ExtensionsBlockSerializationTests
         var json = JsonSerializer.Serialize(block);
         var roundTripped = JsonSerializer.Deserialize<ExtensionsBlock>(json)!;
 
-        Assert.That(roundTripped.Recommendations, Is.EqualTo(block.Recommendations));
-        Assert.That(roundTripped.UnwantedRecommendations, Is.EqualTo(block.UnwantedRecommendations));
+        Assert.Multiple(() =>
+        {
+            Assert.That(roundTripped.Recommendations, Is.EqualTo(block.Recommendations));
+            Assert.That(roundTripped.UnwantedRecommendations, Is.EqualTo(block.UnwantedRecommendations));
+        });
     }
 }

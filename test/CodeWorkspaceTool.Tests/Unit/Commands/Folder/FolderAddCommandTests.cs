@@ -5,6 +5,7 @@ using CodeWorkspaceTool.Serialization;
 namespace CodeWorkspaceTool.Tests.Unit.Commands.Folder;
 
 [TestFixture]
+[TestOf(typeof(FolderAddCommand))]
 public class FolderAddCommandTests
 {
     private const string WorkspacePathFake = "/workspace/demo.code-workspace";
@@ -25,9 +26,9 @@ public class FolderAddCommandTests
         return path;
     }
 
-    [Test, AutoFakeItEasyData]
+    [Test, AutoDataProvider]
     public async Task Adds_a_new_folder_and_saves_the_document(
-        IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+        [Frozen] IWorkspaceFileLocator locator, [Frozen] IWorkspaceRepository repository, FolderAddCommand sut)
     {
         var folderPath = CreateSubdirectory("api");
         A.CallTo(() => locator.Resolve(null)).Returns(WorkspacePathFake);
@@ -37,19 +38,21 @@ public class FolderAddCommandTests
         A.CallTo(() => repository.Save(A<WorkspaceDocument>._, WorkspacePathFake))
             .Invokes((WorkspaceDocument d, string _) => saved = d);
 
-        var command = new FolderAddCommand(locator, repository);
         var settings = new FolderAddCommandSettings { Paths = [folderPath] };
 
-        var exitCode = await CommandTestHelpers.ExecuteAsync(command, settings);
+        var exitCode = await CommandTestHelpers.ExecuteAsync(sut, settings);
 
-        Assert.That(exitCode, Is.EqualTo(0));
-        Assert.That(saved!.Folders, Has.Count.EqualTo(1));
-        Assert.That(WorkspacePath.ToFullPath(WorkspaceDirectory, saved.Folders[0].Path), Is.EqualTo(folderPath));
+        Assert.Multiple(() =>
+        {
+            Assert.That(exitCode, Is.EqualTo(0));
+            Assert.That(saved!.Folders, Has.Count.EqualTo(1));
+            Assert.That(WorkspacePath.ToFullPath(WorkspaceDirectory, saved.Folders[0].Path), Is.EqualTo(folderPath));
+        });
     }
 
-    [Test, AutoFakeItEasyData]
+    [Test, AutoDataProvider]
     public async Task Assigns_the_display_name_when_adding_a_single_folder(
-        IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+        [Frozen] IWorkspaceFileLocator locator, [Frozen] IWorkspaceRepository repository, FolderAddCommand sut)
     {
         var folderPath = CreateSubdirectory("api");
         A.CallTo(() => locator.Resolve(null)).Returns(WorkspacePathFake);
@@ -59,17 +62,16 @@ public class FolderAddCommandTests
         A.CallTo(() => repository.Save(A<WorkspaceDocument>._, WorkspacePathFake))
             .Invokes((WorkspaceDocument d, string _) => saved = d);
 
-        var command = new FolderAddCommand(locator, repository);
         var settings = new FolderAddCommandSettings { Paths = [folderPath], Name = "API" };
 
-        await CommandTestHelpers.ExecuteAsync(command, settings);
+        await CommandTestHelpers.ExecuteAsync(sut, settings);
 
         Assert.That(saved!.Folders[0].Name, Is.EqualTo("API"));
     }
 
-    [Test, AutoFakeItEasyData]
+    [Test, AutoDataProvider]
     public async Task Skips_a_folder_that_is_already_in_the_workspace_without_duplicating_it(
-        IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+        [Frozen] IWorkspaceFileLocator locator, [Frozen] IWorkspaceRepository repository, FolderAddCommand sut)
     {
         var folderPath = CreateSubdirectory("api");
         var existingDocument = new WorkspaceDocument
@@ -79,28 +81,29 @@ public class FolderAddCommandTests
         A.CallTo(() => locator.Resolve(null)).Returns(WorkspacePathFake);
         A.CallTo(() => repository.Load(WorkspacePathFake)).Returns(existingDocument);
 
-        var command = new FolderAddCommand(locator, repository);
         var settings = new FolderAddCommandSettings { Paths = [folderPath] };
 
-        await CommandTestHelpers.ExecuteAsync(command, settings);
+        await CommandTestHelpers.ExecuteAsync(sut, settings);
 
         Assert.That(existingDocument.Folders, Has.Count.EqualTo(1));
     }
 
-    [Test, AutoFakeItEasyData]
+    [Test, AutoDataProvider]
     public void Throws_when_the_directory_does_not_exist(
-        IWorkspaceFileLocator locator, IWorkspaceRepository repository)
+        [Frozen] IWorkspaceFileLocator locator, [Frozen] IWorkspaceRepository repository, FolderAddCommand sut)
     {
         var missingPath = Path.Combine(_tempRoot, "does-not-exist");
         A.CallTo(() => locator.Resolve(null)).Returns(WorkspacePathFake);
         A.CallTo(() => repository.Load(WorkspacePathFake)).Returns(new WorkspaceDocument());
 
-        var command = new FolderAddCommand(locator, repository);
         var settings = new FolderAddCommandSettings { Paths = [missingPath] };
 
-        Assert.That(
-            async () => await CommandTestHelpers.ExecuteAsync(command, settings),
-            Throws.TypeOf<CodeWorkspaceException>());
-        A.CallTo(() => repository.Save(A<WorkspaceDocument>._, A<string>._)).MustNotHaveHappened();
+        Assert.Multiple(() =>
+        {
+            Assert.That(
+                async () => await CommandTestHelpers.ExecuteAsync(sut, settings),
+                Throws.TypeOf<CodeWorkspaceException>());
+            A.CallTo(() => repository.Save(A<WorkspaceDocument>._, A<string>._)).MustNotHaveHappened();
+        });
     }
 }

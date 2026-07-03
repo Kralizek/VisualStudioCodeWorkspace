@@ -4,6 +4,7 @@ using CodeWorkspaceTool.Model;
 namespace CodeWorkspaceTool.Tests.Unit.Model;
 
 [TestFixture]
+[TestOf(typeof(WorkspaceDocument))]
 public class WorkspaceDocumentSerializationTests
 {
     // Regression test: extension data typed as JsonObject serializes as an invalid, unkeyed
@@ -23,8 +24,12 @@ public class WorkspaceDocumentSerializationTests
         var rewritten = JsonSerializer.Serialize(document);
 
         using var parsed = JsonDocument.Parse(rewritten);
-        Assert.That(parsed.RootElement.TryGetProperty("launch", out var launch), Is.True);
-        Assert.That(launch.GetProperty("configurations")[0].GetProperty("name").GetString(), Is.EqualTo("Launch"));
+        var hasLaunch = parsed.RootElement.TryGetProperty("launch", out var launch);
+        Assert.Multiple(() =>
+        {
+            Assert.That(hasLaunch, Is.True);
+            Assert.That(launch.GetProperty("configurations")[0].GetProperty("name").GetString(), Is.EqualTo("Launch"));
+        });
     }
 
     [Test]
@@ -34,8 +39,11 @@ public class WorkspaceDocumentSerializationTests
 
         var json = JsonSerializer.Serialize(document);
 
-        Assert.That(json, Does.Not.Contain("settings"));
-        Assert.That(json, Does.Not.Contain("extensions"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(json, Does.Not.Contain("settings"));
+            Assert.That(json, Does.Not.Contain("extensions"));
+        });
     }
 
     [Test]
@@ -54,7 +62,10 @@ public class WorkspaceDocumentSerializationTests
 
         using var parsed = JsonDocument.Parse(json);
         var folders = parsed.RootElement.GetProperty("folders");
-        Assert.That(folders[0].TryGetProperty("name", out _), Is.False);
-        Assert.That(folders[1].GetProperty("name").GetString(), Is.EqualTo("Root"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(folders[0].TryGetProperty("name", out _), Is.False);
+            Assert.That(folders[1].GetProperty("name").GetString(), Is.EqualTo("Root"));
+        });
     }
 }

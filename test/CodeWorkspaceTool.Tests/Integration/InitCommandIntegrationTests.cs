@@ -1,8 +1,10 @@
 using System.Text.Json;
+using CodeWorkspaceTool.Commands.Init;
 
 namespace CodeWorkspaceTool.Tests.Integration;
 
 [TestFixture]
+[TestOf(typeof(InitCommand))]
 public class InitCommandIntegrationTests : IntegrationTestBase
 {
     [Test]
@@ -11,10 +13,13 @@ public class InitCommandIntegrationTests : IntegrationTestBase
         var exitCode = Run("init", "--output", TempDirectory);
 
         var expectedFile = PathUnder(Path.GetFileName(TempDirectory) + ".code-workspace");
-        Assert.That(exitCode, Is.EqualTo(0));
-        Assert.That(File.Exists(expectedFile), Is.True);
         using var document = JsonDocument.Parse(File.ReadAllText(expectedFile));
-        Assert.That(document.RootElement.GetProperty("folders").GetArrayLength(), Is.EqualTo(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(exitCode, Is.EqualTo(0));
+            Assert.That(File.Exists(expectedFile), Is.True);
+            Assert.That(document.RootElement.GetProperty("folders").GetArrayLength(), Is.EqualTo(0));
+        });
     }
 
     [Test]

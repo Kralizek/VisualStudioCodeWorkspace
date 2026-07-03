@@ -1,9 +1,10 @@
 using System.Text.Json;
 using CodeWorkspaceTool.Commands.Settings;
 
-namespace CodeWorkspaceTool.Tests.Unit;
+namespace CodeWorkspaceTool.Tests.Unit.Commands.Settings;
 
 [TestFixture]
+[TestOf(typeof(SettingValueParser))]
 public class SettingValueParserTests
 {
     [TestCase("true", JsonValueKind.True)]
@@ -39,8 +40,11 @@ public class SettingValueParserTests
     {
         var value = SettingValueParser.Parse("[not json", SettingValueType.Auto);
 
-        Assert.That(value.GetValueKind(), Is.EqualTo(JsonValueKind.String));
-        Assert.That(value.GetValue<string>(), Is.EqualTo("[not json"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(value.GetValueKind(), Is.EqualTo(JsonValueKind.String));
+            Assert.That(value.GetValue<string>(), Is.EqualTo("[not json"));
+        });
     }
 
     [Test]
@@ -48,8 +52,11 @@ public class SettingValueParserTests
     {
         var value = SettingValueParser.Parse("true", SettingValueType.String);
 
-        Assert.That(value.GetValueKind(), Is.EqualTo(JsonValueKind.String));
-        Assert.That(value.GetValue<string>(), Is.EqualTo("true"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(value.GetValueKind(), Is.EqualTo(JsonValueKind.String));
+            Assert.That(value.GetValue<string>(), Is.EqualTo("true"));
+        });
     }
 
     [Test]
