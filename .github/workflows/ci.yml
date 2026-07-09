@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # MinVer needs full history/tags to compute the package version
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -44,3 +46,51 @@ jobs:
         with:
           name: coverage-report
           path: coveragereport
+
+      # Package validation only runs on master pushes (not on every PR): confirms the package
+      # actually builds and carries the metadata a real release depends on (repository/commit
+      # provenance, license, readme), without publishing anything.
+      - name: Pack
+        if: github.event_name == 'push'
+        run: dotnet pack src/CodeWorkspaceTool -c Release -o ./artifacts
+
+      - name: Validate package metadata
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          nupkgs=(./artifacts/*.nupkg)
+          if [ "${#nupkgs[@]}" -ne 1 ]; then
+            echo "Expected exactly one .nupkg in ./artifacts, found ${#nupkgs[@]}" >&2
+            exit 1
+          fi
+
+          nupkg="${nupkgs[0]}"
+          workdir=$(mktemp -d)
+          unzip -q "$nupkg" -d "$workdir"
+          nuspec=$(find "$workdir" -maxdepth 1 -name '*.nuspec')
+
+          echo "--- $nuspec ---"
+          cat "$nuspec"
+
+          fail=0
+          check() { grep -qF "$1" "$nuspec" || { echo "MISSING in nuspec: $1" >&2; fail=1; }; }
+
+          check '<repository type="git"'
+          check 'url="https://github.com/Kralizek/VisualStudioCodeWorkspace"'
+          check 'commit="'
+          check '<license type="expression">MIT</license>'
+          check '<readme>README.md</readme>'
+          [ -f "$workdir/README.md" ] || { echo "MISSING: README.md not embedded in package" >&2; fail=1; }
+
+          if [ "$fail" -ne 0 ]; then
+            exit 1
+          fi
+          echo "Package metadata OK"
+
+      - name: Upload package artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: ./artifacts/*.nupkg
